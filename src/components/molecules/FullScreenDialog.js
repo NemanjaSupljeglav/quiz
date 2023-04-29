@@ -19,14 +19,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const FullScreenDialog = ({
-  opened,
-  handleClose,
-  title,
-  content,
-  onAccept,
-  label
-}) => {
+const FullScreenDialog = props => {
+  const { opened, handleClose, title, content, onAccept, label } = props;
   return (
     <>
       <DialogMUI
@@ -64,8 +58,7 @@ FullScreenDialog.defaultProps = {
   content: "Dialog content",
   visible: false,
   edit: false,
-  label: "Accept",
-  icon: null
+  label: "Accept"
 };
 
 export default FullScreenDialog;

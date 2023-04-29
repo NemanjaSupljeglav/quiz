@@ -2,119 +2,175 @@
 import React, { useState, useEffect, useContext } from "react";
 import MUIDataTable from "mui-datatables";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 
 // MUI
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import TooltipIconButton from "../../components/atoms/TooltipIconButton";
-import Button from "../../components/atoms/Button";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import Input from "../../components/atoms/Input";
-import Select from "../../components/atoms/Select";
 import AddIcon from "@mui/icons-material/Add";
-import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
+import { makeStyles } from "@material-ui/core/styles";
 
-import QuestionForm from "./parts/QuestionsInput";
-//molecules
+//Parts
+import DialogContent from "./parts/DialogContent";
+
+//Molecules
 import FullScreenDialog from "../../components/molecules/FullScreenDialog";
-import Dialog from "../../components/molecules/Dialog";
+import WarningDialog from "../../components/molecules/WarningDialog";
 
 //Context
 import { GlobalContext } from "../../context/globalState";
 
-// Actions
-
-// Atoms
-
-// Molecules
-
-const API = process.env.MAIN_API_URL;
+const useStyles = makeStyles(theme => ({
+  extendRow: {
+    marginLeft: "43px",
+    background: "white",
+    padding: "10px",
+    marginBottom: "2px",
+    borderTopLeftRadius: "10px",
+    borderBottomLeftRadius: "10px",
+    paddingLeft: "20px"
+  },
+  wrapper: {
+    height: "100vh",
+    "& .MuiButtonBase-root": {
+      marginLeft: "15px"
+    }
+  },
+  extendWrapper: { background: "#F5F5F5" },
+  banner: {
+    background: "#1976D2",
+    padding: "10px",
+    color: "white",
+    height: "55px",
+    display: "flex",
+    justifyContent: " space-between",
+    alignItems: "center",
+    paddingLeft: "25px",
+    paddingRight: "35px"
+  },
+  addButton: {
+    display: "flex",
+    justifyContent: "end",
+    marginRight: "-5px"
+  }
+}));
 
 const Quiz = () => {
+  const classes = useStyles();
   const navigate = useNavigate();
   const context = useContext(GlobalContext);
 
   // States
-  const [openDialogAddNew, setOpenDialogAddNew] = useState(false);
+  const [openDialogQuiz, setOpenDialogQuiz] = useState(false);
   const [quizTitle, setQuizTitle] = useState("");
   const [questions, setQuestions] = useState(
-    Array(16).fill({ question: "", answer: "" })
+    Array(15).fill({ question: "", answer: "" })
   );
-  const [questionType, setQuestionType] = useState("");
-  const [openDialogPlay, setOpenDialogPlay] = useState(false);
-  const [openDialogWarning, setOpenDialogWarning] = useState(false);
+  const [validationWarning, setValidationWarning] = useState(0);
+  const [dialogType, setDialogType] = useState("create");
+  const [quizId, setQuizId] = useState(null);
+  const [openWarningDialog, setOpenWarningDialog] = useState(false);
 
   useEffect(() => {
     context?.getAllQuizzes();
   }, []);
 
-  const handleOpenAddDialog = () => {
-    setOpenDialogAddNew(!openDialogAddNew);
+  useEffect(() => {
+    if (context?.oneQuiz?.data) {
+      setQuestions(context?.oneQuiz?.data?.questions);
+      setQuizTitle(context?.oneQuiz?.data?.title);
+      setQuizId(context?.oneQuiz?.data?.id);
+    }
+  }, [context?.oneQuiz?.data]);
+
+  useEffect(() => {
+    if (!openDialogQuiz) {
+      setQuizTitle("");
+      setQuestions(Array(15).fill({ question: "", answer: "" }));
+      setValidationWarning(0);
+      setDialogType("create");
+      context.clearOneQuiz();
+    }
+  }, [openDialogQuiz]);
+
+  //Functions
+  const validateForm = formData => {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(""),
+      questions: Yup.array().of(
+        Yup.object().shape({
+          question: Yup.string().required(""),
+          answer: Yup.string().required("")
+        })
+      )
+    });
+
+    try {
+      schema.validateSync(formData, { abortEarly: false });
+      return true; // Form data is valid
+    } catch (error) {
+      return false; // Form data is invalid
+    }
   };
-  const handleEditClick = (event, dataIndex) => {
-    console.log("iconica");
+
+  const handleOpenQuizDialog = () => {
+    setOpenDialogQuiz(!openDialogQuiz);
   };
+
   const handleEditClickRow = (event, dataIndex) => {
-    console.log("roww", event, "-event", dataIndex);
+    setDialogType("edit");
+    setQuizTitle(context?.quizzes?.data[dataIndex?.rowIndex]?.title);
+    setQuestions(context?.quizzes?.data[dataIndex?.rowIndex]?.questions);
+    setQuizId(context?.quizzes?.data[dataIndex?.rowIndex]?.id);
+    setOpenDialogQuiz(!openDialogQuiz);
   };
-  const handlePlay = id => {
-    navigate("/play/5000");
+
+  const handleaddNewOrEditQuiz = () => {
+    const body = {
+      title: quizTitle,
+      questions: questions
+    };
+    validateForm(body)
+      ? dialogType === "create"
+        ? context?.createQuiz(body, handleOpenQuizDialog)
+        : context?.editQuiz(body, quizId, handleOpenQuizDialog)
+      : setValidationWarning(body?.questions?.length);
   };
-  const contentAddNewQuizDialog = (
-    <Grid
-      container
-      item
-      xs={12}
-      sm={12}
-      md={12}
-      justify="center"
-      alignItems="center"
-    >
-      <Grid item xs={12} sm={12} md={6} lg={4}>
-        <Input label="Quzi title" value={quizTitle} onChange={setQuizTitle} />
-      </Grid>
-      <QuestionForm questions={questions} setQuestions={setQuestions} />
+  const handleGetAllOldQuestions = () => {
+    context?.oldQuestions?.data?.length === 0 && context?.getAllOldQuestions();
+  };
+  const handleOpenWarningDialog = (event, dataIndex) => {
+    setQuizId(context?.quizzes?.data[dataIndex?.rowIndex]?.id);
+    setOpenWarningDialog(!openWarningDialog);
+  };
+  const handleDeleteQuiz = () => {
+    context?.deleteQuiz(quizId, handleOpenWarningDialog);
+  };
+  const handlePlay = (event, dataIndex) => {
+    const id = context?.quizzes?.data[dataIndex?.rowIndex]?.id;
+    navigate(`play/${id}`);
+  };
 
-      {/*       <Grid item xs={12} sm={6} md={6} className="boxBorder">
-        <Input multiline rows={3} label="Pitanje" />
-        <Input label="Odgovor" />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12}>
-        <Select label="Stara pitanja" />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} className="center">
-        <TooltipIconButton
-          tooltipTxt="Dodaj novo pitanje"
-          handleClick={() => setQuestionType("new")}
-          icon={<AddIcon />}
-        />
-
-        <TooltipIconButton
-          tooltipTxt="Izaberi staro pitanje"
-          handleClick={() => setQuestionType("old")}
-          icon={<RestoreFromTrashIcon />}
-        />
-      </Grid> */}
-    </Grid>
+  const contentForAddOrEditQuiz = (
+    <DialogContent
+      questions={questions}
+      setQuestions={setQuestions}
+      validationWarning={validationWarning}
+      setValidationWarning={setValidationWarning}
+      quizTitle={quizTitle}
+      setQuizTitle={setQuizTitle}
+      handleGetAllOldQuestions={handleGetAllOldQuestions}
+      oldQuestions={context?.oldQuestions?.data}
+    />
   );
-  /*
-  const DialogContent = (
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={12} md={12}>
-        <Typography >
-          {t("Jeste li sigurni da želite obrisati premiju?")}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-  */
 
   const columns = [
     {
-      name: "name",
-      field: "name",
-      label: "Naziv kviza",
+      name: "title",
+      field: "title",
+      label: "Title",
       options: {
         sort: false,
         customBodyRender: (value, dataIndex) => {
@@ -123,38 +179,29 @@ const Quiz = () => {
       }
     },
     {
-      name: "name",
-      field: "name",
-      label: "Broj pitanja",
-      options: {
-        sort: false,
-        customBodyRender: (value, dataIndex) => {
-          return <>{value}</>;
-        }
-      }
-    },
-
-    {
-      name: "Akcije",
+      name: "",
       options: {
         sort: false,
         customBodyRender: (value, dataIndex) => {
           return (
             <div style={{ display: "inline-flex" }}>
               <TooltipIconButton
-                tooltipTxt="Pregled stavki RAS datoteke"
-                handleClick={() => {
-                  handlePlay("id");
-                }}
-                icon={<PlayCircleOutlineIcon />}
-              />
-              <TooltipIconButton
-                tooltipTxt="Brisanje RAS-a i stavki iz RAS-a"
+                tooltipTxt="Play"
                 handleClick={event => {
                   event.stopPropagation();
-                  handleEditClick(event, dataIndex);
+                  handlePlay(event, dataIndex);
+                }}
+                icon={<PlayCircleOutlineIcon />}
+                color="disabled"
+              />
+              <TooltipIconButton
+                tooltipTxt="Delete"
+                handleClick={event => {
+                  event.stopPropagation();
+                  handleOpenWarningDialog(event, dataIndex);
                 }}
                 icon={<DeleteOutlineIcon />}
+                color="disabled"
               />
             </div>
           );
@@ -164,7 +211,6 @@ const Quiz = () => {
   ];
 
   const options = {
-    filterType: "dropdown",
     filter: false,
     responsive: "standard",
     selectableRows: "none",
@@ -176,25 +222,48 @@ const Quiz = () => {
     onRowClick: handleEditClickRow,
     customToolbar: () => {
       return (
-        <Button
-          label="+ novi kviz"
-          variant="text"
-          onClick={() => handleOpenAddDialog()}
-          size="small"
-        />
+        <Grid className={classes.addButton}>
+          <TooltipIconButton
+            tooltipTxt="Add new quiz"
+            handleClick={() => handleOpenQuizDialog("create")}
+            icon={<AddIcon />}
+            color="disabled"
+            stayle={{ marginRight: "255px" }}
+          />
+        </Grid>
       );
     },
     setRowProps: () => ({
       style: { cursor: "pointer" }
-    })
+    }),
+    expandableRows: true,
+    renderExpandableRow: (rowData, dataIndex) => {
+      return (
+        <tr>
+          <td colSpan={6} className={classes.extendWrapper}>
+            {context?.quizzes?.data[dataIndex?.rowIndex]?.questions?.map(
+              (item, index) => (
+                <div key={index} className={classes.extendRow}>
+                  {item?.question} ({item?.answer})
+                </div>
+              )
+            )}
+          </td>
+        </tr>
+      );
+    }
   };
 
   return (
-    <>
+    <Grid className={classes.wrapper}>
+      <Grid className={classes.banner}>
+        <Grid>Quiz Maker </Grid>
+        <Grid>Total Quizzes: {context?.quizzes?.data?.length}</Grid>
+      </Grid>
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} mx={3} md={12} mt={3}>
           <MUIDataTable
-            title="Tabela dostupnih kvizova"
             data={context?.quizzes?.data}
             columns={columns}
             options={options}
@@ -202,15 +271,22 @@ const Quiz = () => {
         </Grid>
       </Grid>
       <FullScreenDialog
-        opened={openDialogAddNew}
-        handleClose={handleOpenAddDialog}
-        onAccept={() => {}}
-        acceptBtnLabel="Save"
-        closeBtnLabel="Close"
-        content={contentAddNewQuizDialog}
-        title="Add New Quiz"
+        opened={openDialogQuiz}
+        handleClose={handleOpenQuizDialog}
+        onAccept={handleaddNewOrEditQuiz}
+        content={contentForAddOrEditQuiz}
+        title={dialogType === "create" ? "Add New Quiz" : "Edit Quiz"}
+        label="save"
       />
-    </>
+      <WarningDialog
+        opened={openWarningDialog}
+        handleClose={handleOpenWarningDialog}
+        onAccept={handleDeleteQuiz}
+        content="Are you sure you want to delete this quiz?"
+        title="Deleting a quiz"
+        acceptLabel="Delete"
+      />
+    </Grid>
   );
 };
 

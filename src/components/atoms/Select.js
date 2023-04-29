@@ -15,7 +15,8 @@ const SelectSearch = props => {
     label,
     variant,
     noOptionsText,
-    optionalLabel
+    optionalLabel,
+    validation
   } = props;
   return (
     <Autocomplete
@@ -37,6 +38,7 @@ const SelectSearch = props => {
           size="small"
           label={label}
           variant={variant}
+          error={validation}
         />
       )}
       noOptionsText={noOptionsText}
@@ -53,6 +55,7 @@ SelectSearch.defaultProps = {
   disabled: false,
   variant: "standard",
   noOptionsText: "Nema pronađenih opcija",
+  validation: false,
   optionalLabel: () => {}
 };
 

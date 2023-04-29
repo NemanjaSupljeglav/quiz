@@ -38,10 +38,8 @@ const Input = props => {
       value={value}
       required={required}
       error={validation}
-      helperText={validation}
       InputLabelProps={{ shrink }}
       onChange={e => {
-        e.preventDefault();
         onChange(e?.target?.value);
       }}
       InputProps={{
@@ -58,7 +56,6 @@ Input.defaultProps = {
   type: "text",
   value: "",
   error: false,
-  helperText: "",
   required: false,
   disabled: false,
   dataCy: null,
