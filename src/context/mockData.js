@@ -2,7 +2,7 @@ export const quizzesMock = {
   status: 200,
   data: [
     {
-      id: 1,
+      id: "1",
       title: "Enterwell quiz",
       questions: [
         {
@@ -97,7 +97,7 @@ export const quizzesMock = {
       ]
     },
     {
-      id: 2,
+      id: "2",
       title: "Music stars quize",
       questions: [
         {
@@ -174,7 +174,7 @@ export const quizzesMock = {
       ]
     },
     {
-      id: 3,
+      id: "3",
       title: "Sport quiz",
       questions: [
         {
@@ -227,7 +227,7 @@ export const quizzesMock = {
       ]
     },
     {
-      id: 4,
+      id: "4",
       title: "General questions quiz",
       questions: [
         {

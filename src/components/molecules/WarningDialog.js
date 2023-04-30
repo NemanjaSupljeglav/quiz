@@ -20,10 +20,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const WarningDialog = props => {
   const {
-    onAccept,
-    handleClose,
     opened,
     title,
+    handleClose,
+    onAccept,
     content,
     closeLabel,
     acceptLabel

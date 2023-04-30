@@ -1,4 +1,4 @@
-export default function songsReducer(state, action) {
+export default function quizzesReducer(state, action) {
   switch (action.type) {
     case "GET_QUIZZES_REQ":
       return {
@@ -13,7 +13,7 @@ export default function songsReducer(state, action) {
       return {
         ...state,
         quizzes: {
-          data: action.payload.data,
+          data: action?.payload?.data,
           loading: false
         }
       };
@@ -23,7 +23,7 @@ export default function songsReducer(state, action) {
         quizzes: {
           data: [],
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     case "CREATE_QUIZ_REQ":
@@ -39,9 +39,9 @@ export default function songsReducer(state, action) {
       return {
         ...state,
         quizzes: {
-          //data: [action.payload.data, ...state?.quizzes?.data],
+          //data: [action?.payload?.data, ...state?.quizzes?.data],
           data: [
-            { ...action.payload.data, id: Math.random() },
+            { ...action?.payload?.data, id: Math.random() },
             ...state?.quizzes?.data
           ],
           loading: false
@@ -58,7 +58,7 @@ export default function songsReducer(state, action) {
         quizzes: {
           data: state?.quizzes?.data,
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     case "GET_ALL_OLD_QUESTIONS_REQ":
@@ -74,7 +74,7 @@ export default function songsReducer(state, action) {
       return {
         ...state,
         oldQuestions: {
-          data: action.payload.data,
+          data: action?.payload?.data,
           loading: false
         }
       };
@@ -84,7 +84,7 @@ export default function songsReducer(state, action) {
         oldQuestions: {
           data: [],
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     case "GET_ONE_QUIZ_REQ":
@@ -100,8 +100,17 @@ export default function songsReducer(state, action) {
       return {
         ...state,
         oneQuiz: {
-          data: action.payload.data,
+          data: action?.payload?.data,
           loading: false
+        }
+      };
+    case "GET_ONE_QUIZ_FROM_TABLE":
+      return {
+        ...state,
+        oneQuiz: {
+          data: state?.quizzes?.data?.find(
+            quiz => quiz.id == action?.payload?.id
+          )
         }
       };
     case "GET_ONE_QUIZ_FLR":
@@ -110,7 +119,7 @@ export default function songsReducer(state, action) {
         oneQuiz: {
           data: [],
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     case "CLEAR_ONE_QUIZ":
@@ -137,7 +146,7 @@ export default function songsReducer(state, action) {
         quizzes: {
           data: state?.quizzes?.data?.map(item => {
             if (item?.id === action.payload?.id) {
-              return { ...action.payload.data, id: action.payload?.id };
+              return { ...action?.payload?.data, id: action.payload?.id };
             } else return item;
           }),
           loading: false
@@ -154,7 +163,7 @@ export default function songsReducer(state, action) {
         quizzes: {
           data: state?.quizzes?.data,
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     case "DELETE_QUIZ_REQ":
@@ -182,7 +191,7 @@ export default function songsReducer(state, action) {
         quizzes: {
           data: state?.quizzes?.data,
           loading: false,
-          error: action.payload.error
+          error: action?.payload?.error
         }
       };
     default:

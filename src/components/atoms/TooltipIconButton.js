@@ -18,7 +18,7 @@ const TooltipIconButton = props => {
 
 TooltipIconButton.defaultProps = {
   tooltipTxt: "",
-  handleClick: () => console.log(""),
+  handleClick: () => {},
   icon: {},
   disabled: false,
   color: "inherit"

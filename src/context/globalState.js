@@ -1,14 +1,18 @@
+//React
 import React, { createContext, useReducer } from "react";
 import { NotificationManager } from "react-notifications";
 
+//Services
 import {
   getFunc,
   postFunc,
   deleteFunc,
   putFunc
 } from "../services/mainApiServices";
+
 import quizzesReducer from "../reducers/quizzesReducer";
 import { quizzesMock, oldQuestionsMock } from "./mockData";
+
 const initialState = {
   quizzes: {
     data: [],
@@ -35,7 +39,7 @@ const GlobalProvider = ({ children }) => {
   const getAllQuizzes = async () => {
     dispatch({ type: "GET_QUIZZES_REQ" });
 
-    //const response = await getFunc(`quizzes`);
+    const response = await getFunc(`quizzes`);
 
     if (/* response?.status === 200*/ quizzesMock?.status) {
       dispatch({
@@ -47,6 +51,7 @@ const GlobalProvider = ({ children }) => {
       NotificationManager.error(quizzesMock.status.description.message);
     }
   };
+
   const getAllOldQuestions = async () => {
     dispatch({ type: "GET_ALL_OLD_QUESTIONS_REQ" });
 
@@ -62,6 +67,7 @@ const GlobalProvider = ({ children }) => {
       NotificationManager.error(quizzesMock.status.description.message);
     }
   };
+
   const createQuiz = async (body, handleOpen) => {
     dispatch({ type: "CREATE_QUIZ_REQ" });
 
@@ -80,6 +86,7 @@ const GlobalProvider = ({ children }) => {
       NotificationManager.error(quizzesMock.status.description.message);
     }
   };
+
   const getOneQuiz = async id => {
     if (state?.quizzes?.data?.length > 0) {
       dispatch({
@@ -87,6 +94,8 @@ const GlobalProvider = ({ children }) => {
         payload: { id: id }
       });
     } else {
+      dispatch({ type: "GET_ONE_QUIZ_REQ" });
+
       const response = await getFunc(`quizzes/${id}`);
 
       if (response?.status === 200) {
@@ -99,11 +108,12 @@ const GlobalProvider = ({ children }) => {
         NotificationManager.error(quizzesMock.status.description.message);
       }
     }
-    dispatch({ type: "GET_ONE_QUIZ_REQ" });
   };
+
   const clearOneQuiz = () => {
     dispatch({ type: "CLEAR_ONE_QUIZ" });
   };
+
   const editQuiz = async (body, id, handleOpen) => {
     dispatch({ type: "EDIT_QUIZ_REQ" });
 
@@ -122,6 +132,7 @@ const GlobalProvider = ({ children }) => {
       NotificationManager.error(quizzesMock.status.description.message);
     }
   };
+
   const deleteQuiz = async (id, handleOpen) => {
     dispatch({ type: "DELETE_QUIZ_REQ" });
 

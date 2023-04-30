@@ -1,7 +1,7 @@
-// React
-import React, { useState } from "react";
+//React
+import React from "react";
 
-// MUI
+//MUI
 import TextField from "@mui/material/TextField";
 
 const Input = props => {
@@ -11,17 +11,15 @@ const Input = props => {
     label,
     validation,
     onChange,
-    required,
     disabled,
     multiline,
     rows,
     rowsMax,
-    step,
-    shrink,
-    variant,
-    warning,
-    inputComponent
+    variant
   } = props;
+  const handleChange = e => {
+    onChange && onChange(e?.target?.value);
+  };
 
   return (
     <TextField
@@ -36,35 +34,21 @@ const Input = props => {
       type={type}
       label={label}
       value={value}
-      required={required}
       error={validation}
-      InputLabelProps={{ shrink }}
-      onChange={e => {
-        onChange(e?.target?.value);
-      }}
-      InputProps={{
-        inputComponent,
-        step,
-        style: warning ? { color: "red" } : null
-      }}
+      onChange={handleChange}
     />
   );
 };
 
 Input.defaultProps = {
-  label: "Label",
   type: "text",
   value: "",
-  error: false,
-  required: false,
+  label: "Label",
+  validation: false,
+  onChange: () => {},
   disabled: false,
-  dataCy: null,
-  variant: "standard",
-  InputLabelProps: { shrink: false },
-  warning: false,
-  inputComponent: "input",
-  amountType: false,
-  multiline: false
+  multiline: false,
+  variant: "standard"
 };
 
 export default Input;

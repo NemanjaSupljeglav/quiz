@@ -9,10 +9,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 const SelectSearch = props => {
   const {
     list,
-    disabled,
+    label,
     value,
     onChange,
-    label,
+    disabled,
     variant,
     noOptionsText,
     optionalLabel,
@@ -54,7 +54,7 @@ SelectSearch.defaultProps = {
   onChange: () => {},
   disabled: false,
   variant: "standard",
-  noOptionsText: "Nema pronađenih opcija",
+  noOptionsText: "No options found",
   validation: false,
   optionalLabel: () => {}
 };

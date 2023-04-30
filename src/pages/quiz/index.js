@@ -95,7 +95,6 @@ const Quiz = () => {
     }
   }, [openDialogQuiz]);
 
-  //Functions
   const validateForm = formData => {
     const schema = Yup.object().shape({
       title: Yup.string().required(""),

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NotificationManager } from "react-notifications";
 
-const API = process.env.MAIN_API_URL;
+const API = "process.env.MAIN_API_URL";
 
 export const getFunc = async url => {
   return axios
