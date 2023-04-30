@@ -5,8 +5,8 @@ This is a web application for creating and playing quizzes. You can create, edit
 
 Installation
 
-Clone the repository: git clone https://github.com/yourusername/quiz-app.git
-Navigate to the project directory: cd quiz-app
+Clone the repository: git clone https://github.com/NemanjaSupljeglav/quiz
+Navigate to the project directory: cd quiz
 Install dependencies: npm install
 
 Usage
@@ -17,28 +17,25 @@ Open the app in your browser: http://localhost:3000
 
 Creating a quiz
 
-Click the "Create Quiz" button.
-Fill in the required fields: title, description, and questions.
+Click the "+" icon.
+Fill in the required fields: title, answares, and questions.
 Click "Save".
 
 Editing a quiz
 
-Click the "Edit" button next to the quiz you want to edit.
-Make your changes to the title, description, and/or questions.
+Click the "row" to the quiz you want to edit.
+Make your changes to the title, answares, and/or questions.
 
 Click "Save".
 
 Deleting a quiz
 
-Click the "Delete" button next to the quiz you want to delete.
+Click the "Delete" icon next to the quiz you want to delete.
 Confirm that you want to delete the quiz.
 
 Playing a quiz
 
 Click the "Play" button next to the quiz you want to play.
-Answer each question by selecting one of the multiple-choice options.
-Click "Submit" when you are finished.
-View your results.
 
 Technologies Used
 React

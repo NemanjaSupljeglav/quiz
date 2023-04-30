@@ -39,7 +39,7 @@ const GlobalProvider = ({ children }) => {
   const getAllQuizzes = async () => {
     dispatch({ type: "GET_QUIZZES_REQ" });
 
-    const response = await getFunc(`quizzes`);
+    //const response = await getFunc(`quizzes`);
 
     if (/* response?.status === 200*/ quizzesMock?.status) {
       dispatch({
@@ -48,7 +48,7 @@ const GlobalProvider = ({ children }) => {
       });
     } else {
       dispatch({ type: "GET_QUIZZES_FLR" });
-      NotificationManager.error(quizzesMock.status.description.message);
+      //NotificationManager.error(response.message);
     }
   };
 
@@ -64,7 +64,7 @@ const GlobalProvider = ({ children }) => {
       });
     } else {
       dispatch({ type: "GET_ALL_OLD_QUESTIONS_FLR" });
-      NotificationManager.error(quizzesMock.status.description.message);
+      NotificationManager.error(response.message);
     }
   };
 
@@ -74,7 +74,7 @@ const GlobalProvider = ({ children }) => {
     const response = await postFunc(`quizzes`, body);
     const mockResponse = { status: 200 };
     if (/* response?.status === 200*/ mockResponse?.status) {
-      NotificationManager.error("bravo");
+      NotificationManager.success("Success");
 
       dispatch({
         type: "CREATE_QUIZ_SCS",
@@ -83,7 +83,7 @@ const GlobalProvider = ({ children }) => {
       handleOpen();
     } else {
       dispatch({ type: "CREATE_QUIZ_FLR" });
-      NotificationManager.error(quizzesMock.status.description.message);
+      NotificationManager.error(response.message);
     }
   };
 
@@ -105,7 +105,7 @@ const GlobalProvider = ({ children }) => {
         });
       } else {
         dispatch({ type: "GET_ONE_QUIZ_FLR" });
-        NotificationManager.error(quizzesMock.status.description.message);
+        NotificationManager.error(response.message);
       }
     }
   };
@@ -120,7 +120,7 @@ const GlobalProvider = ({ children }) => {
     const response = await putFunc(`quizzes/${id}`, body);
     const mockResponse = { status: 200 };
     if (/* response?.status === 200*/ mockResponse?.status) {
-      NotificationManager.error("bravo");
+      NotificationManager.success("Success");
 
       dispatch({
         type: "EDIT_QUIZ_SCS",
@@ -129,7 +129,7 @@ const GlobalProvider = ({ children }) => {
       handleOpen();
     } else {
       dispatch({ type: "EDIT_QUIZ_FLR" });
-      NotificationManager.error(quizzesMock.status.description.message);
+      NotificationManager.error(response.message);
     }
   };
 
@@ -140,6 +140,7 @@ const GlobalProvider = ({ children }) => {
 
     const mockResponse = { status: 200 };
     if (/* response?.status === 200*/ mockResponse?.status) {
+      NotificationManager.success("Success");
       dispatch({
         type: "DELETE_QUIZ_SCS",
         payload: { data: /* response?.data?.id */ id }

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { NotificationManager } from "react-notifications";
 
 const API = "process.env.MAIN_API_URL";
 
@@ -10,7 +9,7 @@ export const getFunc = async url => {
       return response.data;
     })
     .catch(error => {
-      return NotificationManager.error(error.message);
+      return error;
     });
 };
 
@@ -21,7 +20,7 @@ export const postFunc = async (url, body) => {
       return response.data;
     })
     .catch(error => {
-      return NotificationManager.error(error.message);
+      return error;
     });
 };
 
@@ -32,7 +31,7 @@ export const deleteFunc = async url => {
       return response.data;
     })
     .catch(error => {
-      return NotificationManager.error(error.message);
+      return error;
     });
 };
 
@@ -43,6 +42,6 @@ export const putFunc = async (url, body) => {
       return response.data;
     })
     .catch(error => {
-      return NotificationManager.error(error.message);
+      return error;
     });
 };

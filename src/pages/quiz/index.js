@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import MUIDataTable from "mui-datatables";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { NotificationManager } from "react-notifications";
 
 // MUI
 import Grid from "@mui/material/Grid";
@@ -110,6 +111,7 @@ const Quiz = () => {
       schema.validateSync(formData, { abortEarly: false });
       return true; // Form data is valid
     } catch (error) {
+      NotificationManager.error("Fields are required", "Incorrect entry", 1500);
       return false; // Form data is invalid
     }
   };
