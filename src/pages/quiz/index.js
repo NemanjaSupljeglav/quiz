@@ -111,7 +111,6 @@ const Quiz = () => {
       schema.validateSync(formData, { abortEarly: false });
       return true; // Form data is valid
     } catch (error) {
-      NotificationManager.error("Fields are required", "Incorrect entry", 1500);
       return false; // Form data is invalid
     }
   };
